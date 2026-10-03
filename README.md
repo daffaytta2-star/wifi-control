@@ -1,0 +1,2 @@
+# wifi-control
+connect cutt 
