@@ -9,7 +9,7 @@
 
     <application
         android:label="WiFi Control"
-        android:theme="@style/Theme.Material3.DayNight">
+        android:theme="@android:style/Theme.Material.NoActionBar">
         <activity
             android:name=".MainActivity"
             android:exported="true">
