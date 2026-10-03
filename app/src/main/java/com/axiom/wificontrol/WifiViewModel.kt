@@ -35,9 +35,12 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
     private fun trustedSet() = prefs.getStringSet("trusted", emptySet()) ?: emptySet()
     private fun blockedSet() = prefs.getStringSet("blocked", emptySet()) ?: emptySet()
 
+    private fun keyOf(d: Device): String =
+        if (d.mac.contains("?")) d.ip else d.mac.lowercase()
+
     private fun saveLists(devices: List<Device>) {
-        val trusted = devices.filter { it.trusted }.map { it.mac.lowercase() }.toSet()
-        val blocked = devices.filter { it.blocked }.map { it.mac.lowercase() }.toSet()
+        val trusted = devices.filter { it.trusted }.map { keyOf(it) }.toSet()
+        val blocked = devices.filter { it.blocked }.map { keyOf(it) }.toSet()
         prefs.edit()
             .putStringSet("trusted", trusted)
             .putStringSet("blocked", blocked)
@@ -70,9 +73,10 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             _state.value = _state.value.copy(
                 scanning = false,
                 devices = result.map {
+                    val k = if (it.mac.contains("?")) it.ip else it.mac.lowercase()
                     it.copy(
-                        trusted = t.contains(it.mac.lowercase()),
-                        blocked = b.contains(it.mac.lowercase())
+                        trusted = t.contains(k),
+                        blocked = b.contains(k)
                     )
                 },
                 message = "Ketemu " + result.size + " device."
@@ -81,8 +85,9 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun toggleTrusted(dev: Device) {
+        val k = keyOf(dev)
         val updated = _state.value.devices.map {
-            if (it.mac == dev.mac) it.copy(trusted = !it.trusted) else it
+            if (keyOf(it) == k) it.copy(trusted = !it.trusted) else it
         }
         _state.value = _state.value.copy(devices = updated)
         saveLists(updated)
@@ -102,13 +107,14 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             }
             val nowBlocked = !dev.blocked
             val ok = if (nowBlocked) {
-                RootShell.blockIp(dev.ip) && RootShell.blockMac(dev.mac)
+                RootShell.blockIp(dev.ip)
             } else {
-                RootShell.unblockIp(dev.ip) && RootShell.unblockMac(dev.mac)
+                RootShell.unblockIp(dev.ip)
             }
             if (ok) {
+                val k = keyOf(dev)
                 val updated = _state.value.devices.map {
-                    if (it.mac == dev.mac) it.copy(blocked = nowBlocked) else it
+                    if (keyOf(it) == k) it.copy(blocked = nowBlocked) else it
                 }
                 _state.value = _state.value.copy(
                     devices = updated,
