@@ -297,7 +297,7 @@ fun SettingsTab(ctx: android.content.Context) {
         Text("Pengaturan Tampilan",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            modifier = Modifier.padding(bottom = 16.dp))
+            modifier = Modifier.padding(bottom = 0.dp))
 
         Text("Blur Pill: " + pillBlur + "dp", fontSize = 14.sp)
         Slider(
