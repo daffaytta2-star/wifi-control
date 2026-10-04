@@ -99,6 +99,10 @@ fun Screen(vm: WifiViewModel) {
                         Text("Root   : " + if (state.rooted) "YA" else "TIDAK",
                             fontSize = 14.sp,
                             color = if (state.rooted) Color(0xFF4CAF50) else Color(0xFFF44336))
+                        Spacer(Modifier.height(8.dp))
+                        Button(onClick = { RouterHelper.openRouter(LocalContext.current, n.gatewayIp) }) {
+                            Text("Buka Admin Router")
+                        }
                     }
                 }
             }
