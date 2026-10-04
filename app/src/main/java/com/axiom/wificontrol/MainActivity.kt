@@ -123,9 +123,9 @@ fun Screen(vm: WifiViewModel) {
             ) {
                 Row(
                     Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(pillWidth / 100f)
                         .glassPill()
-                        .padding(vertical = 6.dp),
+                        .padding(vertical = pillHeight.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
