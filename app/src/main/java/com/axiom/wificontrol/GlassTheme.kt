@@ -87,9 +87,21 @@ fun Modifier.glass(
 }
 
 /** Pill transparan untuk bottom nav. */
+
 fun Modifier.glassPill(
-    shape: RoundedCornerShape = RoundedCornerShape(50)
-): Modifier = this
-    .clip(shape)
-    .background(DarkGlassColors.PillBg, shape)
-    .border(BorderStroke(1.dp, DarkGlassColors.PillBorder), shape)
+    shape: RoundedCornerShape = RoundedCornerShape(50),
+    blurRadius: Int = 30,
+    alphaValue: Int = 16
+): Modifier {
+    val bgColor = Color.argb(alphaValue, 255, 255, 255)
+    val base = this
+        .clip(shape)
+        .background(bgColor, shape)
+        .border(BorderStroke(1.dp, DarkGlassColors.PillBorder), shape)
+
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        base.blur(blurRadius.dp)
+    } else {
+        base
+    }
+}
