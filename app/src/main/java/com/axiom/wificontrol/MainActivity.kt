@@ -106,19 +106,32 @@ fun Screen(vm: WifiViewModel) {
             )
         },
         bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = tab == 0,
-                    onClick = { tab = 0 },
-                    icon = { Icon(Icons.Filled.CheckCircle, "Devices") },
-                    label = { Text("Devices") }
-                )
-                NavigationBarItem(
-                    selected = tab == 1,
-                    onClick = { tab = 1 },
-                    icon = { Icon(Icons.Filled.Refresh, "History") },
-                    label = { Text("History") }
-                )
+            androidx.compose.foundation.layout.Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp, vertical = 20.dp)
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .glass()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TabPill(
+                        selected = tab == 0,
+                        icon = { Icon(Icons.Filled.CheckCircle, "Devices") },
+                        label = "Devices",
+                        onClick = { tab = 0 }
+                    )
+                    TabPill(
+                        selected = tab == 1,
+                        icon = { Icon(Icons.Filled.Refresh, "History") },
+                        label = "History",
+                        onClick = { tab = 1 }
+                    )
+                }
             }
         },
         snackbarHost = { SnackbarHost(snack) }
@@ -226,5 +239,31 @@ fun HistoryRow(h: DeviceHistory) {
             }
             Text(time, fontSize = 11.sp, color = Color.Gray)
         }
+    }
+}
+
+@Composable
+fun TabPill(
+    selected: Boolean,
+    icon: @Composable () -> Unit,
+    label: String,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(
+                if (selected) DarkGlassColors.GlassTop else Color.Transparent
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 20.dp, vertical = 8.dp)
+    ) {
+        icon()
+        Text(
+            label,
+            fontSize = 12.sp,
+            color = if (selected) Color.White else DarkGlassColors.TextSecondary
+        )
     }
 }

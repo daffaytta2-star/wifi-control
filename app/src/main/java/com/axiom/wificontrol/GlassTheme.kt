@@ -16,18 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 object DarkGlassColors {
-    // Background — hitam pekat
     val BgBase = Color(0xFF0A0A0C)
     val BgSoft = Color(0xFF121216)
 
-    // Glass — hitam semi transparan + border putih tipis
-    val GlassTop = Color(0x33FFFFFF)
-    val GlassMid = Color(0x1AFFFFFF)
-    val GlassBot = Color(0x0AFFFFFF)
-    val GlassBorder = Color(0x55FFFFFF)
-    val GlassBorderSoft = Color(0x33FFFFFF)
+    // Glass lebih tebal — alpha naik
+    val GlassTop = Color(0x66FFFFFF)
+    val GlassMid = Color(0x44FFFFFF)
+    val GlassBot = Color(0x22FFFFFF)
+    val GlassBorder = Color(0x77FFFFFF)
+    val GlassBorderSoft = Color(0x44FFFFFF)
 
-    // Accent
     val Accent = Color(0xFFB794FF)
     val AccentSoft = Color(0xFF9C6BFF)
     val Connect = Color(0xFF4CD964)
@@ -42,7 +40,7 @@ fun GlassTheme(content: @Composable () -> Unit) {
         primary = DarkGlassColors.Accent,
         secondary = DarkGlassColors.AccentSoft,
         background = DarkGlassColors.BgBase,
-        surface = Color(0x33FFFFFF),
+        surface = Color(0x44FFFFFF),
         onPrimary = Color.White,
         onSurface = DarkGlassColors.TextPrimary
     )
@@ -59,9 +57,9 @@ fun Modifier.liquidBackground(): Modifier {
     )
 }
 
-/** Liquid glass dark — alpha rendah, border putih tipis, blur Android 12+. */
+/** Liquid glass tebal — alpha tinggi, border putih, blur Android 12+. */
 fun Modifier.glass(
-    shape: RoundedCornerShape = RoundedCornerShape(22.dp)
+    shape: RoundedCornerShape = RoundedCornerShape(24.dp)
 ): Modifier {
     val base = this
         .clip(shape)
@@ -76,7 +74,7 @@ fun Modifier.glass(
         .border(BorderStroke(1.dp, DarkGlassColors.GlassBorder), shape)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        base.blur(20.dp)
+        base.blur(24.dp)
     } else {
         base
     }
