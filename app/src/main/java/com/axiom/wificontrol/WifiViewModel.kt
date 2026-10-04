@@ -21,6 +21,8 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
 
     private val prefs = app.getSharedPreferences("wifi_ctrl", Context.MODE_PRIVATE)
     private val scanner = NetworkScanner(app)
+    private val db = AppDatabase.get(app)
+    private val historyDao = db.historyDao()
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state
@@ -70,15 +72,37 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             )
             val t = trustedSet()
             val b = blockedSet()
+            val oldKeys = _state.value.devices.map { keyOf(it) }.toSet()
+            val newDevs = result.map {
+                val k = keyOf(it)
+                it.copy(trusted = t.contains(k), blocked = b.contains(k))
+            }
+            val newKeys = newDevs.map { keyOf(it) }.toSet()
+
+            newDevs.forEach { d ->
+                if (!oldKeys.contains(keyOf(d))) {
+                    try {
+                        historyDao.insert(DeviceHistory(
+                            ip = d.ip, mac = d.mac,
+                            vendor = d.vendor, event = "CONNECT"
+                        ))
+                    } catch (_: Exception) {}
+                }
+            }
+            _state.value.devices.forEach { d ->
+                if (!newKeys.contains(keyOf(d))) {
+                    try {
+                        historyDao.insert(DeviceHistory(
+                            ip = d.ip, mac = d.mac,
+                            vendor = d.vendor, event = "DISCONNECT"
+                        ))
+                    } catch (_: Exception) {}
+                }
+            }
+
             _state.value = _state.value.copy(
                 scanning = false,
-                devices = result.map {
-                    val k = if (it.mac.contains("?")) it.ip else it.mac.lowercase()
-                    it.copy(
-                        trusted = t.contains(k),
-                        blocked = b.contains(k)
-                    )
-                },
+                devices = newDevs,
                 message = "Ketemu " + result.size + " device."
             )
         }
@@ -106,11 +130,8 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
             val nowBlocked = !dev.blocked
-            val ok = if (nowBlocked) {
-                RootShell.blockIp(dev.ip)
-            } else {
-                RootShell.unblockIp(dev.ip)
-            }
+            val ok = if (nowBlocked) RootShell.blockIp(dev.ip)
+                     else RootShell.unblockIp(dev.ip)
             if (ok) {
                 val k = keyOf(dev)
                 val updated = _state.value.devices.map {
