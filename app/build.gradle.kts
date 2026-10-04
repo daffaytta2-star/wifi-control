@@ -6,7 +6,7 @@ plugins {
 
 android {
     signingConfigs {
-        create("debug") {
+        create("release") {
             storeFile = file("../keystore/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
@@ -24,7 +24,7 @@ android {
     }
     buildTypes {
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     buildFeatures { compose = true }
