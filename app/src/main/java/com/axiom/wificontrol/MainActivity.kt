@@ -118,12 +118,12 @@ fun Screen(vm: WifiViewModel) {
         bottomBar = {
             androidx.compose.foundation.layout.Box(
                 Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(pillWidth / 100f)
                     .padding(horizontal = 60.dp, vertical = 20.dp)
             ) {
                 Row(
                     Modifier
-                        .fillMaxWidth(pillWidth / 100f)
+                        .fillMaxWidth()
                         .glassPill()
                         .padding(vertical = pillHeight.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
