@@ -79,6 +79,9 @@ fun Screen(vm: WifiViewModel) {
     var history by remember { mutableStateOf<List<DeviceHistory>>(emptyList()) }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val pillBlur = remember { AppSettings.getPillBlur(ctx) }
+    val pillAlpha = remember { AppSettings.getPillAlpha(ctx) }
+    val pkgVersion = remember { try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?" } catch (_: Exception) { "?" } }
 
     LaunchedEffect(state.message) {
         state.message?.let {
