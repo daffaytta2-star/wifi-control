@@ -26,6 +26,13 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
     private val historyDao = db.historyDao()
 
     private val _state = MutableStateFlow(UiState())
+
+    private fun logToFile(msg: String) {
+        try {
+            val f = java.io.File("/sdcard/wifi_control.log")
+            f.appendText(java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.US).format(java.util.Date()) + " " + msg + "\n")
+        } catch (_: Exception) {}
+    }
     val state: StateFlow<UiState> = _state
 
     init {
@@ -37,9 +44,9 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 val c = historyDao.getAll()
-                Log.d("WiFiControl", "DB OK, count=" + c.size)
+                logToFile("DB OK count=" + c.size); Log.d("WiFiControl", "DB OK, count=" + c.size)
             } catch (e: Exception) {
-                Log.e("WiFiControl", "DB ERR: " + e.message, e)
+                logToFile("DB ERR: " + e.message); Log.e("WiFiControl", "DB ERR: " + e.message, e)
                 _state.value = _state.value.copy(message = "DB ERR: " + e.message)
             }
         }
@@ -98,10 +105,10 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
                             ip = d.ip, mac = d.mac,
                             vendor = d.vendor, event = "CONNECT"
                         ))
-                        Log.d("WiFiControl", "INSERT OK: " + d.ip)
+                        logToFile("INSERT OK: " + d.ip); Log.d("WiFiControl", "INSERT OK: " + d.ip)
                     } catch (e: Exception) {
                         insertErr = e.message
-                        Log.e("WiFiControl", "INSERT ERR: " + e.message, e)
+                        logToFile("INSERT ERR: " + e.message); Log.e("WiFiControl", "INSERT ERR: " + e.message, e)
                     }
                 }
             }
@@ -169,10 +176,10 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
     suspend fun loadHistory(): List<DeviceHistory> {
         return try {
             val h = historyDao.getAll()
-            Log.d("WiFiControl", "loadHistory: " + h.size)
+            logToFile("loadHistory: " + h.size); Log.d("WiFiControl", "loadHistory: " + h.size)
             h
         } catch (e: Exception) {
-            Log.e("WiFiControl", "loadHistory ERR: " + e.message, e)
+            logToFile("loadHistory ERR: " + e.message); Log.e("WiFiControl", "loadHistory ERR: " + e.message, e)
             _state.value = _state.value.copy(message = "Load ERR: " + e.message)
             emptyList()
         }
