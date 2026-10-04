@@ -183,7 +183,7 @@ fun Screen(vm: WifiViewModel) {
                 Text("Device (" + state.devices.size + ")",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 6.dp))
-                LazyColumn(Modifier.weight(1f)) {
+                LazyColumn(Modifier.weight(1f), contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 90.dp)) {
                     items(state.devices, key = { it.mac + it.ip }) { dev ->
                         DeviceRow(dev, vm)
                     }
@@ -196,11 +196,46 @@ fun Screen(vm: WifiViewModel) {
                     Text("Belom ada history. Scan dulu.",
                         fontSize = 13.sp, color = Color.Gray)
                 } else {
-                    LazyColumn(Modifier.weight(1f)) {
+                    LazyColumn(Modifier.weight(1f), contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 90.dp)) {
                         items(history, key = { it.id }) { h ->
                             HistoryRow(h)
                         }
                     }
+                }
+            }
+
+            // Overlay pill melayang di bawah
+            androidx.compose.foundation.layout.Box(
+                Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Row(
+                    Modifier
+                        .padding(bottom = 20.dp)
+                        .glassPill(blurRadius = pillBlur, alphaValue = pillAlpha)
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TabPill(
+                        selected = tab == 0,
+                        icon = { Icon(Icons.Filled.CheckCircle, "Devices") },
+                        label = "Devices",
+                        onClick = { tab = 0 }
+                    )
+                    TabPill(
+                        selected = tab == 1,
+                        icon = { Icon(Icons.Filled.Refresh, "History") },
+                        label = "History",
+                        onClick = { tab = 1 }
+                    )
+                    TabPill(
+                        selected = tab == 2,
+                        icon = { Icon(Icons.Filled.Settings, "Settings") },
+                        label = "Settings",
+                        onClick = { tab = 2 }
+                    )
                 }
             }
         }
