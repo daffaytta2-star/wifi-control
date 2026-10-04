@@ -19,8 +19,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -118,7 +120,7 @@ fun Screen(vm: WifiViewModel) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .glassPill()
+                        .glassPill(blurRadius = pillBlur, alphaValue = pillAlpha)
                         .padding(vertical = 6.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
@@ -134,6 +136,12 @@ fun Screen(vm: WifiViewModel) {
                         icon = { Icon(Icons.Filled.Refresh, "History") },
                         label = "History",
                         onClick = { tab = 1 }
+                    )
+                    TabPill(
+                        selected = tab == 2,
+                        icon = { Icon(Icons.Filled.Settings, "Settings") },
+                        label = "Settings",
+                        onClick = { tab = 2 }
                     )
                 }
             }
@@ -160,7 +168,9 @@ fun Screen(vm: WifiViewModel) {
                 }
             }
 
-            if (tab == 0) {
+            if (tab == 2) {
+                SettingsTab(ctx)
+            } else if (tab == 0) {
                 if (state.scanning) {
                     LinearProgressIndicator(
                         progress = { state.progress },
@@ -270,5 +280,58 @@ fun TabPill(
             fontSize = 11.sp,
             color = if (selected) Color.White else DarkGlassColors.TextSecondary
         )
+    }
+}
+
+@Composable
+fun SettingsTab(ctx: android.content.Context) {
+    var pillBlur by remember { mutableIntStateOf(AppSettings.getPillBlur(ctx)) }
+    var pillAlpha by remember { mutableIntStateOf(AppSettings.getPillAlpha(ctx)) }
+    var cardBlur by remember { mutableIntStateOf(AppSettings.getCardBlur(ctx)) }
+
+    Column(Modifier.fillMaxSize().padding(4.dp)) {
+
+        Text("Pengaturan Tampilan",
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            modifier = Modifier.padding(bottom = 16.dp))
+
+        Text("Blur Pill: " + pillBlur + "dp", fontSize = 14.sp)
+        Slider(
+            value = pillBlur.toFloat(),
+            onValueChange = {
+                pillBlur = it.toInt()
+                AppSettings.setPillBlur(ctx, pillBlur)
+            },
+            valueRange = 0f..60f,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+        )
+
+        Text("Transparansi Pill: " + (pillAlpha * 100 / 255) + "%", fontSize = 14.sp)
+        Slider(
+            value = pillAlpha.toFloat(),
+            onValueChange = {
+                pillAlpha = it.toInt()
+                AppSettings.setPillAlpha(ctx, pillAlpha)
+            },
+            valueRange = 0f..255f,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+        )
+
+        Text("Blur Card: " + cardBlur + "dp", fontSize = 14.sp)
+        Slider(
+            value = cardBlur.toFloat(),
+            onValueChange = {
+                cardBlur = it.toInt()
+                AppSettings.setCardBlur(ctx, cardBlur)
+            },
+            valueRange = 0f..60f,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+        )
+
+        Spacer(Modifier.height(16.dp))
+        Text("Catatan: Blur hanya jalan di Android 12+",
+            fontSize = 12.sp,
+            color = DarkGlassColors.TextSecondary)
     }
 }
