@@ -79,8 +79,9 @@ fun Screen(vm: WifiViewModel) {
     var history by remember { mutableStateOf<List<DeviceHistory>>(emptyList()) }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val pillBlur = remember { AppSettings.getPillBlur(ctx) }
-    val pillAlpha = remember { AppSettings.getPillAlpha(ctx) }
+    val pillWidth = remember { AppSettings.getPillWidth(ctx) }
+    val pillHeight = remember { AppSettings.getPillHeight(ctx) }
+    val pillFont = remember { AppSettings.getPillFont(ctx) }
     val pkgVersion = remember { try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?" } catch (_: Exception) { "?" } }
 
     LaunchedEffect(state.message) {
@@ -123,7 +124,7 @@ fun Screen(vm: WifiViewModel) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .glassPill(blurRadius = pillBlur, alphaValue = pillAlpha)
+                        .glassPill()
                         .padding(vertical = 6.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
@@ -132,19 +133,25 @@ fun Screen(vm: WifiViewModel) {
                         selected = tab == 0,
                         icon = { Icon(Icons.Filled.CheckCircle, "Devices") },
                         label = "Devices",
-                        onClick = { tab = 0 }
+                        onClick = { tab = 0 },
+                        fontSize = pillFont,
+                        verticalPadding = pillHeight
                     )
                     TabPill(
                         selected = tab == 1,
                         icon = { Icon(Icons.Filled.Refresh, "History") },
                         label = "History",
-                        onClick = { tab = 1 }
+                        onClick = { tab = 1 },
+                        fontSize = pillFont,
+                        verticalPadding = pillHeight
                     )
                     TabPill(
                         selected = tab == 2,
                         icon = { Icon(Icons.Filled.Settings, "Settings") },
                         label = "Settings",
-                        onClick = { tab = 2 }
+                        onClick = { tab = 2 },
+                        fontSize = pillFont,
+                        verticalPadding = pillHeight
                     )
                 }
             }
@@ -275,7 +282,9 @@ fun TabPill(
     selected: Boolean,
     icon: @Composable () -> Unit,
     label: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    fontSize: Int = 10,
+    verticalPadding: Int = 6
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -297,54 +306,56 @@ fun TabPill(
     }
 }
 
+
+
 @Composable
 fun SettingsTab(ctx: android.content.Context) {
-    var pillBlur by remember { mutableIntStateOf(AppSettings.getPillBlur(ctx)) }
-    var pillAlpha by remember { mutableIntStateOf(AppSettings.getPillAlpha(ctx)) }
-    var cardBlur by remember { mutableIntStateOf(AppSettings.getCardBlur(ctx)) }
+    var pillWidth by remember { mutableIntStateOf(AppSettings.getPillWidth(ctx)) }
+    var pillHeight by remember { mutableIntStateOf(AppSettings.getPillHeight(ctx)) }
+    var pillFont by remember { mutableIntStateOf(AppSettings.getPillFont(ctx)) }
 
     Column(Modifier.fillMaxSize().padding(4.dp)) {
 
-        Text("Pengaturan Tampilan",
+        Text("Pengaturan Pill Nav",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            modifier = Modifier.padding(bottom = 0.dp))
+            modifier = Modifier.padding(bottom = pillHeight.dp))
 
-        Text("Blur Pill: " + pillBlur + "dp", fontSize = 14.sp)
+        Text("Lebar Pill: " + pillWidth + "%", fontSize = 14.sp)
         Slider(
-            value = pillBlur.toFloat(),
+            value = pillWidth.toFloat(),
             onValueChange = {
-                pillBlur = it.toInt()
-                AppSettings.setPillBlur(ctx, pillBlur)
+                pillWidth = it.toInt()
+                AppSettings.setPillWidth(ctx, pillWidth)
             },
-            valueRange = 0f..60f,
+            valueRange = 60f..100f,
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
         )
 
-        Text("Transparansi Pill: " + (pillAlpha * 100 / 255) + "%", fontSize = 14.sp)
+        Text("Tinggi Pill: " + pillHeight + "dp", fontSize = 14.sp)
         Slider(
-            value = pillAlpha.toFloat(),
+            value = pillHeight.toFloat(),
             onValueChange = {
-                pillAlpha = it.toInt()
-                AppSettings.setPillAlpha(ctx, pillAlpha)
+                pillHeight = it.toInt()
+                AppSettings.setPillHeight(ctx, pillHeight)
             },
-            valueRange = 0f..255f,
+            valueRange = 4f..20f,
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
         )
 
-        Text("Blur Card: " + cardBlur + "dp", fontSize = 14.sp)
+        Text("Ukuran Font: " + pillFont + "sp", fontSize = 14.sp)
         Slider(
-            value = cardBlur.toFloat(),
+            value = pillFont.toFloat(),
             onValueChange = {
-                cardBlur = it.toInt()
-                AppSettings.setCardBlur(ctx, cardBlur)
+                pillFont = it.toInt()
+                AppSettings.setPillFont(ctx, pillFont)
             },
-            valueRange = 0f..60f,
+            valueRange = 10f..16f,
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
         )
 
         Spacer(Modifier.height(16.dp))
-        Text("Catatan: Blur hanya jalan di Android 12+",
+        Text("Atur ukuran pill nav biar pas di layar lu",
             fontSize = 12.sp,
             color = DarkGlassColors.TextSecondary)
     }

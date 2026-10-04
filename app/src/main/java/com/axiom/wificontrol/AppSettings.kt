@@ -3,35 +3,19 @@ package com.axiom.wificontrol
 import android.content.Context
 
 object AppSettings {
-
     private const val PREF = "app_settings"
+    private const val KEY_PILL_WIDTH = "pill_width"
+    private const val KEY_PILL_HEIGHT = "pill_height"
+    private const val KEY_PILL_FONT = "pill_font"
 
-    // Default: pill blur 30dp, alpha 6%
-    private const val KEY_PILL_BLUR = "pill_blur"
-    private const val KEY_PILL_ALPHA = "pill_alpha"
-    private const val KEY_CARD_BLUR = "card_blur"
+    private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
 
-    fun getPillBlur(ctx: Context): Int =
-        ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            .getInt(KEY_PILL_BLUR, 30)
+    fun getPillWidth(ctx: Context): Int = prefs(ctx).getInt(KEY_PILL_WIDTH, 90)
+    fun setPillWidth(ctx: Context, v: Int) = prefs(ctx).edit().putInt(KEY_PILL_WIDTH, v).apply()
 
-    fun setPillBlur(ctx: Context, v: Int) =
-        ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            .edit().putInt(KEY_PILL_BLUR, v).apply()
+    fun getPillHeight(ctx: Context): Int = prefs(ctx).getInt(KEY_PILL_HEIGHT, 6)
+    fun setPillHeight(ctx: Context, v: Int) = prefs(ctx).edit().putInt(KEY_PILL_HEIGHT, v).apply()
 
-    fun getPillAlpha(ctx: Context): Int =
-        ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            .getInt(KEY_PILL_ALPHA, 16)  // 16 = 6% dari 255
-
-    fun setPillAlpha(ctx: Context, v: Int) =
-        ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            .edit().putInt(KEY_PILL_ALPHA, v).apply()
-
-    fun getCardBlur(ctx: Context): Int =
-        ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            .getInt(KEY_CARD_BLUR, 24)
-
-    fun setCardBlur(ctx: Context, v: Int) =
-        ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            .edit().putInt(KEY_CARD_BLUR, v).apply()
+    fun getPillFont(ctx: Context): Int = prefs(ctx).getInt(KEY_PILL_FONT, 10)
+    fun setPillFont(ctx: Context, v: Int) = prefs(ctx).edit().putInt(KEY_PILL_FONT, v).apply()
 }
