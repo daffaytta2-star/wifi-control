@@ -79,9 +79,10 @@ fun Screen(vm: WifiViewModel) {
     var history by remember { mutableStateOf<List<DeviceHistory>>(emptyList()) }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val pillWidth = remember { AppSettings.getPillWidth(ctx) }
-    val pillHeight = remember { AppSettings.getPillHeight(ctx) }
-    val pillFont = remember { AppSettings.getPillFont(ctx) }
+    // Baca ulang tiap kali tab berubah — biar slider ngefek
+    val pillWidth = remember(tab) { AppSettings.getPillWidth(ctx) }
+    val pillHeight = remember(tab) { AppSettings.getPillHeight(ctx) }
+    val pillFont = remember(tab) { AppSettings.getPillFont(ctx) }
     val pkgVersion = remember { try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?" } catch (_: Exception) { "?" } }
 
     LaunchedEffect(state.message) {
