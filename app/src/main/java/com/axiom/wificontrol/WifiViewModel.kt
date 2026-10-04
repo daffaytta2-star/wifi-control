@@ -29,7 +29,9 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun logToFile(msg: String) {
         try {
-            val f = java.io.File("/sdcard/wifi_control.log")
+            val dir = java.io.File("/data/data/com.axiom.wificontrol/files")
+            if (!dir.exists()) dir.mkdirs()
+            val f = java.io.File(dir, "wifi_control.log")
             f.appendText(java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.US).format(java.util.Date()) + " " + msg + "\n")
         } catch (_: Exception) {}
     }
