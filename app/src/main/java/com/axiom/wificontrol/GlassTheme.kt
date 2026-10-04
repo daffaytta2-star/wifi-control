@@ -27,9 +27,9 @@ object DarkGlassColors {
     val GlassBorderSoft = Color(0x33FFFFFF)
 
     // Pill nav
-    val PillBg = Color(0x22FFFFFF)
-    val PillActive = Color(0x40FFFFFF)
-    val PillBorder = Color(0x44FFFFFF)
+    val PillBg = Color(0xFF0A0A0C)
+    val PillActive = Color(0xFF8B92A8)
+    val PillBorder = Color(0xFF2A2A30)
 
     // Accent — putih/silver, bukan ungu
     val Accent = Color(0xFFE0E4EE)

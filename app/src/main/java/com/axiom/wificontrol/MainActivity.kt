@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -292,25 +293,39 @@ fun TabPill(
     label: String,
     onClick: () -> Unit,
     fontSize: Int = 10,
-    verticalPadding: Int = 6
+    verticalPadding: Int = 6,
+    weight: Float = 1f
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .clip(RoundedCornerShape(50))
+            .weight(weight)
+            .padding(horizontal = 4.dp)
+            .clip(RoundedCornerShape(22.dp))
             .background(
                 if (selected) DarkGlassColors.PillActive else Color.Transparent
             )
+            .then(
+                if (selected) Modifier.border(
+                    BorderStroke(1.dp, Color(0x55FFFFFF)),
+                    RoundedCornerShape(22.dp)
+                ) else Modifier
+            )
             .clickable { onClick() }
-            .padding(horizontal = 22.dp, vertical = 8.dp)
+            .padding(horizontal = 12.dp, vertical = verticalPadding.dp)
     ) {
-        icon()
-        Spacer(Modifier.height(2.dp))
-        Text(
-            label,
-            fontSize = 11.sp,
-            color = if (selected) Color.White else DarkGlassColors.TextSecondary
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            icon()
+            Spacer(Modifier.height(2.dp))
+            Text(
+                label,
+                fontSize = fontSize.sp,
+                color = if (selected) Color.White else DarkGlassColors.TextSecondary,
+                maxLines = 1
+            )
+        }
     }
 }
 
