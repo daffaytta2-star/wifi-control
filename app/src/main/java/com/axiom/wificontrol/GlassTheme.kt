@@ -55,10 +55,15 @@ fun GlassTheme(content: @Composable () -> Unit) {
 
 @Composable
 fun Modifier.liquidBackground(): Modifier {
+    // Gradient 3 warna biar transparansi pill keliatan
     return this.background(
-        Brush.verticalGradient(
-            0f to DarkGlassColors.BgSoft,
-            1f to DarkGlassColors.BgBase
+        Brush.radialGradient(
+            colors = listOf(
+                Color(0xFF2A2040),  // ungu gelap di tengah
+                Color(0xFF151828),  // biru gelap
+                Color(0xFF0A0A0C)   // hitam di pinggir
+            ),
+            radius = 1200f
         )
     )
 }
@@ -94,10 +99,11 @@ fun Modifier.glassPill(
     alphaValue: Int = 16
 ): Modifier {
     val bgColor = Color(red = 255, green = 255, blue = 255, alpha = alphaValue)
+    val borderColor = Color(red = 255, green = 255, blue = 255, alpha = 80)
     val base = this
         .clip(shape)
         .background(bgColor, shape)
-        .border(BorderStroke(1.dp, DarkGlassColors.PillBorder), shape)
+        .border(BorderStroke(1.dp, borderColor), shape)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         base.blur(blurRadius.dp)
