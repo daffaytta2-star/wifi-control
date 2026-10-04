@@ -98,7 +98,7 @@ fun Modifier.glassPill(
     blurRadius: Int = 30,
     alphaValue: Int = 16
 ): Modifier {
-    val bgColor = Color(red = 255, green = 255, blue = 255, alpha = alphaValue)
+    val bgColor = Color(red = 30, green = 30, blue = 40, alpha = alphaValue)
     val borderColor = Color(red = 255, green = 255, blue = 255, alpha = 80)
     val base = this
         .clip(shape)
