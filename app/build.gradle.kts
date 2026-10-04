@@ -9,10 +9,10 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.axiom.wificontrol"
+        versionCode = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toIntOrNull() ?: 1
+        versionName = "1.0." + (System.getenv("GITHUB_RUN_NUMBER") ?: "1")
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
     }
     buildFeatures { compose = true }
     composeOptions {

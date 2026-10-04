@@ -91,7 +91,7 @@ fun Screen(vm: WifiViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("WiFi Control") },
+                title = { Text("WiFi Control v" + (ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?")) },
                 actions = {
                     IconButton(
                         onClick = {
