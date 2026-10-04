@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         val monitor = DeviceMonitor(this)
         monitor.start()
         setContent {
-            MaterialTheme(colorScheme = darkColorScheme()) {
+            GlassTheme {
                 Screen(vm)
             }
         }
@@ -123,10 +123,10 @@ fun Screen(vm: WifiViewModel) {
         },
         snackbarHost = { SnackbarHost(snack) }
     ) { pad ->
-        Column(Modifier.padding(pad).fillMaxSize().padding(12.dp)) {
+        Column(Modifier.padding(pad).fillMaxSize().liquidBackground().padding(12.dp)) {
 
             state.netInfo?.let { n ->
-                Card(Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                Box(Modifier.fillMaxWidth().padding(bottom = 8.dp).glass()) {
                     Column(Modifier.padding(12.dp)) {
                         Text("IP kamu: " + n.myIp, fontSize = 14.sp)
                         Text("Gateway: " + n.gatewayIp, fontSize = 14.sp)
@@ -179,7 +179,7 @@ fun Screen(vm: WifiViewModel) {
 
 @Composable
 fun DeviceRow(dev: Device, vm: WifiViewModel) {
-    Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+    Box(Modifier.fillMaxWidth().padding(vertical = 4.dp).glass()) {
         Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(dev.ip, fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -217,7 +217,7 @@ fun HistoryRow(h: DeviceHistory) {
     val time = java.text.SimpleDateFormat("dd MMM HH:mm:ss", java.util.Locale.getDefault())
         .format(java.util.Date(h.timestamp))
 
-    Card(Modifier.fillMaxWidth().padding(vertical = 3.dp)) {
+    Box(Modifier.fillMaxWidth().padding(vertical = 3.dp).glass()) {
         Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(h.event, fontSize = 12.sp, color = color, fontWeight = FontWeight.Bold)
