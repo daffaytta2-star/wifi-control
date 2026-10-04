@@ -79,10 +79,9 @@ fun Screen(vm: WifiViewModel) {
     var history by remember { mutableStateOf<List<DeviceHistory>>(emptyList()) }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    // Baca ulang tiap kali tab berubah — biar slider ngefek
-    val pillWidth = remember(tab) { AppSettings.getPillWidth(ctx) }
-    val pillHeight = remember(tab) { AppSettings.getPillHeight(ctx) }
-    val pillFont = remember(tab) { AppSettings.getPillFont(ctx) }
+    var pillWidth by remember { mutableIntStateOf(AppSettings.getPillWidth(ctx)) }
+    var pillHeight by remember { mutableIntStateOf(AppSettings.getPillHeight(ctx)) }
+    var pillFont by remember { mutableIntStateOf(AppSettings.getPillFont(ctx)) }
     val pkgVersion = remember { try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?" } catch (_: Exception) { "?" } }
 
     LaunchedEffect(state.message) {
@@ -180,7 +179,15 @@ fun Screen(vm: WifiViewModel) {
             }
 
             if (tab == 2) {
-                SettingsTab(ctx)
+                SettingsTab(
+                    ctx = ctx,
+                    pillWidth = pillWidth,
+                    pillHeight = pillHeight,
+                    pillFont = pillFont,
+                    onPillWidthChange = { v -> pillWidth = v },
+                    onPillHeightChange = { v -> pillHeight = v },
+                    onPillFontChange = { v -> pillFont = v }
+                )
             } else if (tab == 0) {
                 if (state.scanning) {
                     LinearProgressIndicator(
@@ -309,25 +316,31 @@ fun TabPill(
 
 
 
-@Composable
-fun SettingsTab(ctx: android.content.Context) {
-    var pillWidth by remember { mutableIntStateOf(AppSettings.getPillWidth(ctx)) }
-    var pillHeight by remember { mutableIntStateOf(AppSettings.getPillHeight(ctx)) }
-    var pillFont by remember { mutableIntStateOf(AppSettings.getPillFont(ctx)) }
 
+
+@Composable
+fun SettingsTab(
+    ctx: android.content.Context,
+    pillWidth: Int,
+    pillHeight: Int,
+    pillFont: Int,
+    onPillWidthChange: (Int) -> Unit,
+    onPillHeightChange: (Int) -> Unit,
+    onPillFontChange: (Int) -> Unit
+) {
     Column(Modifier.fillMaxSize().padding(4.dp)) {
 
         Text("Pengaturan Pill Nav",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            modifier = Modifier.padding(bottom = pillHeight.dp))
+            modifier = Modifier.padding(bottom = 16.dp))
 
         Text("Lebar Pill: " + pillWidth + "%", fontSize = 14.sp)
         Slider(
             value = pillWidth.toFloat(),
             onValueChange = {
-                pillWidth = it.toInt()
-                AppSettings.setPillWidth(ctx, pillWidth)
+                onPillWidthChange(it.toInt())
+                AppSettings.setPillWidth(ctx, it.toInt())
             },
             valueRange = 60f..100f,
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
@@ -337,8 +350,8 @@ fun SettingsTab(ctx: android.content.Context) {
         Slider(
             value = pillHeight.toFloat(),
             onValueChange = {
-                pillHeight = it.toInt()
-                AppSettings.setPillHeight(ctx, pillHeight)
+                onPillHeightChange(it.toInt())
+                AppSettings.setPillHeight(ctx, it.toInt())
             },
             valueRange = 4f..20f,
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
@@ -348,8 +361,8 @@ fun SettingsTab(ctx: android.content.Context) {
         Slider(
             value = pillFont.toFloat(),
             onValueChange = {
-                pillFont = it.toInt()
-                AppSettings.setPillFont(ctx, pillFont)
+                onPillFontChange(it.toInt())
+                AppSettings.setPillFont(ctx, it.toInt())
             },
             valueRange = 10f..16f,
             modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
