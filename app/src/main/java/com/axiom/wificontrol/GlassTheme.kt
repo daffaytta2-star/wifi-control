@@ -17,19 +17,25 @@ import androidx.compose.ui.unit.dp
 
 object DarkGlassColors {
     val BgBase = Color(0xFF0A0A0C)
-    val BgSoft = Color(0xFF121216)
+    val BgSoft = Color(0xFF141418)
 
-    // Glass lebih tebal — alpha naik
-    val GlassTop = Color(0x66FFFFFF)
-    val GlassMid = Color(0x44FFFFFF)
-    val GlassBot = Color(0x22FFFFFF)
-    val GlassBorder = Color(0x77FFFFFF)
-    val GlassBorderSoft = Color(0x44FFFFFF)
+    // Card glass — lebih tebal, tapi tetap gelap
+    val GlassTop = Color(0x4DFFFFFF)
+    val GlassMid = Color(0x33FFFFFF)
+    val GlassBot = Color(0x1AFFFFFF)
+    val GlassBorder = Color(0x55FFFFFF)
+    val GlassBorderSoft = Color(0x33FFFFFF)
 
-    val Accent = Color(0xFFB794FF)
-    val AccentSoft = Color(0xFF9C6BFF)
-    val Connect = Color(0xFF4CD964)
-    val Disconnect = Color(0xFFFF5A5A)
+    // Pill nav
+    val PillBg = Color(0x22FFFFFF)
+    val PillActive = Color(0x40FFFFFF)
+    val PillBorder = Color(0x44FFFFFF)
+
+    // Accent — putih/silver, bukan ungu
+    val Accent = Color(0xFFE0E4EE)
+    val AccentSoft = Color(0xFFB8BEC9)
+    val Connect = Color(0xFF5DD97A)
+    val Disconnect = Color(0xFFFF6B6B)
     val TextPrimary = Color(0xFFF0F2F8)
     val TextSecondary = Color(0xFF8B91A7)
 }
@@ -40,8 +46,8 @@ fun GlassTheme(content: @Composable () -> Unit) {
         primary = DarkGlassColors.Accent,
         secondary = DarkGlassColors.AccentSoft,
         background = DarkGlassColors.BgBase,
-        surface = Color(0x44FFFFFF),
-        onPrimary = Color.White,
+        surface = Color(0x33FFFFFF),
+        onPrimary = Color(0xFF1A1D26),
         onSurface = DarkGlassColors.TextPrimary
     )
     MaterialTheme(colorScheme = scheme, content = content)
@@ -57,7 +63,7 @@ fun Modifier.liquidBackground(): Modifier {
     )
 }
 
-/** Liquid glass tebal — alpha tinggi, border putih, blur Android 12+. */
+/** Liquid glass — blur Android 12+, fallback alpha Android 11. */
 fun Modifier.glass(
     shape: RoundedCornerShape = RoundedCornerShape(24.dp)
 ): Modifier {
@@ -79,3 +85,11 @@ fun Modifier.glass(
         base
     }
 }
+
+/** Pill transparan untuk bottom nav. */
+fun Modifier.glassPill(
+    shape: RoundedCornerShape = RoundedCornerShape(50)
+): Modifier = this
+    .clip(shape)
+    .background(DarkGlassColors.PillBg, shape)
+    .border(BorderStroke(1.dp, DarkGlassColors.PillBorder), shape)

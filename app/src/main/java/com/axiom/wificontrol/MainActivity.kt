@@ -113,13 +113,13 @@ fun Screen(vm: WifiViewModel) {
             androidx.compose.foundation.layout.Box(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 40.dp, vertical = 20.dp)
+                    .padding(horizontal = 60.dp, vertical = 20.dp)
             ) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .glass()
-                        .padding(vertical = 8.dp),
+                        .glassPill()
+                        .padding(vertical = 6.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -258,15 +258,16 @@ fun TabPill(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(
-                if (selected) DarkGlassColors.GlassTop else Color.Transparent
+                if (selected) DarkGlassColors.PillActive else Color.Transparent
             )
             .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 8.dp)
+            .padding(horizontal = 22.dp, vertical = 8.dp)
     ) {
         icon()
+        Spacer(Modifier.height(2.dp))
         Text(
             label,
-            fontSize = 12.sp,
+            fontSize = 11.sp,
             color = if (selected) Color.White else DarkGlassColors.TextSecondary
         )
     }
