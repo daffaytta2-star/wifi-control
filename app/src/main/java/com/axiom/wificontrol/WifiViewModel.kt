@@ -2,6 +2,7 @@ package com.axiom.wificontrol
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,16 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             rooted = RootShell.isRooted(),
             netInfo = scanner.getNetInfo()
         )
+        // Tes DB pas init
+        viewModelScope.launch {
+            try {
+                val c = historyDao.getAll()
+                Log.d("WiFiControl", "DB OK, count=" + c.size)
+            } catch (e: Exception) {
+                Log.e("WiFiControl", "DB ERR: " + e.message, e)
+                _state.value = _state.value.copy(message = "DB ERR: " + e.message)
+            }
+        }
     }
 
     private fun trustedSet() = prefs.getStringSet("trusted", emptySet()) ?: emptySet()
@@ -79,6 +90,7 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             }
             val newKeys = newDevs.map { keyOf(it) }.toSet()
 
+            var insertErr: String? = null
             newDevs.forEach { d ->
                 if (!oldKeys.contains(keyOf(d))) {
                     try {
@@ -86,7 +98,11 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
                             ip = d.ip, mac = d.mac,
                             vendor = d.vendor, event = "CONNECT"
                         ))
-                    } catch (_: Exception) {}
+                        Log.d("WiFiControl", "INSERT OK: " + d.ip)
+                    } catch (e: Exception) {
+                        insertErr = e.message
+                        Log.e("WiFiControl", "INSERT ERR: " + e.message, e)
+                    }
                 }
             }
             _state.value.devices.forEach { d ->
@@ -103,7 +119,8 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             _state.value = _state.value.copy(
                 scanning = false,
                 devices = newDevs,
-                message = "Ketemu " + result.size + " device."
+                message = if (insertErr != null) "Insert ERR: " + insertErr
+                          else "Ketemu " + result.size + " device."
             )
         }
     }
@@ -149,10 +166,16 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-
-
     suspend fun loadHistory(): List<DeviceHistory> {
-        return try { historyDao.getAll() } catch (_: Exception) { emptyList() }
+        return try {
+            val h = historyDao.getAll()
+            Log.d("WiFiControl", "loadHistory: " + h.size)
+            h
+        } catch (e: Exception) {
+            Log.e("WiFiControl", "loadHistory ERR: " + e.message, e)
+            _state.value = _state.value.copy(message = "Load ERR: " + e.message)
+            emptyList()
+        }
     }
 
     fun clearMessage() {
