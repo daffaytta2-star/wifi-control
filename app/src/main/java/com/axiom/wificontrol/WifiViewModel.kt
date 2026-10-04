@@ -187,6 +187,10 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    suspend fun clearHistory() {
+        try { historyDao.clearAll() } catch (_: Exception) {}
+    }
+
     fun clearMessage() {
         _state.value = _state.value.copy(message = null)
     }

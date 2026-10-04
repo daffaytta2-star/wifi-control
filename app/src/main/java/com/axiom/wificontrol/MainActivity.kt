@@ -189,9 +189,20 @@ fun Screen(vm: WifiViewModel) {
                     }
                 }
             } else {
-                Text("History (" + history.size + ")",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 6.dp))
+                Row(
+                    Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("History (" + history.size + ")",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f))
+                    Button(onClick = {
+                        scope.launch {
+                            vm.clearHistory()
+                            history = vm.loadHistory()
+                        }
+                    }) { Text("Hapus") }
+                }
                 if (history.isEmpty()) {
                     Text("Belom ada history. Scan dulu.",
                         fontSize = 13.sp, color = Color.Gray)
