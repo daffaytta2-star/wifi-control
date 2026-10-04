@@ -38,6 +38,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestPerms()
+        val monitor = DeviceMonitor(this)
+        monitor.start()
         setContent {
             MaterialTheme(colorScheme = darkColorScheme()) {
                 Screen(vm)
