@@ -72,6 +72,7 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
     fun scan() {
         if (_state.value.scanning) return
         viewModelScope.launch {
+            val oldKeys = _state.value.devices.map { keyOf(it) }.toSet()
             _state.value = _state.value.copy(
                 scanning = true, progress = 0f,
                 devices = emptyList(), message = null
@@ -92,8 +93,7 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
             )
             val t = trustedSet()
             val b = blockedSet()
-            val oldKeys = _state.value.devices.map { keyOf(it) }.toSet()
-            val newDevs = result.map {
+                        val newDevs = result.map {
                 val k = keyOf(it)
                 it.copy(trusted = t.contains(k), blocked = b.contains(k))
             }
