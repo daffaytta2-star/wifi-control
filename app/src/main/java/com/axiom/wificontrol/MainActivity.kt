@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -71,6 +72,7 @@ fun Screen(vm: WifiViewModel) {
     var tab by remember { mutableIntStateOf(0) }
     var history by remember { mutableStateOf<List<DeviceHistory>>(emptyList()) }
     val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(state.message) {
         state.message?.let {
@@ -82,7 +84,7 @@ fun Screen(vm: WifiViewModel) {
     // Load history tiap pindah ke tab History
     LaunchedEffect(tab) {
         if (tab == 1) {
-            history = vm.loadHistory()
+            scope.launch { history = vm.loadHistory() }
         }
     }
 
@@ -94,7 +96,7 @@ fun Screen(vm: WifiViewModel) {
                     IconButton(
                         onClick = {
                             if (tab == 0) vm.scan()
-                            else history = vm.loadHistory()
+                            else scope.launch { history = vm.loadHistory() }
                         },
                         enabled = !state.scanning
                     ) {
