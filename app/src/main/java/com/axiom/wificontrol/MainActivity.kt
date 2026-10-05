@@ -101,6 +101,16 @@ fun Screen(vm: WifiViewModel) {
         }
     }
 
+    // Auto-refresh scan tiap 30 detik
+    LaunchedEffect(Unit) {
+        while (true) {
+            kotlinx.coroutines.delay(30_000L)
+            if (!state.scanning && tab == 0) {
+                vm.scan()
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
