@@ -194,7 +194,7 @@ fun Screen(vm: WifiViewModel) {
             if (tab == 3) {
                 SpeedTestTab(ctx)
             } else if (tab == 2) {
-                SpeedTestTab(
+                SettingsTab(
                     ctx = ctx,
                     pillWidth = pillWidth,
                     pillHeight = pillHeight,
