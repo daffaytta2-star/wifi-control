@@ -297,8 +297,9 @@ fun TabPill(
     verticalPadding: Int = 6,
     weight: Float = 1f
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .weight(weight)
             .padding(horizontal = 4.dp)
