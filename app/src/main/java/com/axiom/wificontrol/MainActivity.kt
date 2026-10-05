@@ -302,7 +302,7 @@ fun TabPill(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .width(110.dp)
+            .width(90.dp)
             .padding(horizontal = 4.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(
