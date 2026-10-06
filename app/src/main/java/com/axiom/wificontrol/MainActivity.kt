@@ -173,36 +173,8 @@ fun Screen(vm: WifiViewModel) {
     ) { pad ->
         Column(Modifier.padding(pad).fillMaxSize().liquidBackground().padding(12.dp)) {
 
-            state.netInfo?.let { n ->
-                Box(Modifier.fillMaxWidth().padding(bottom = 8.dp).glass()) {
-                    Column(Modifier.padding(12.dp)) {
-                        Text("IP kamu: " + n.myIp, fontSize = 14.sp)
-                        Text("Gateway: " + n.gatewayIp, fontSize = 14.sp)
-                        Text("Subnet : " + n.subnet, fontSize = 14.sp)
-                        Text("Root   : " + if (state.rooted) "YA" else "TIDAK",
-                            fontSize = 14.sp,
-                            color = if (state.rooted) Color(0xFF4CAF50) else Color(0xFFF44336))
-                        Spacer(Modifier.height(8.dp))
-                        val ctxBtn = LocalContext.current
-                        Button(onClick = { RouterHelper.openRouter(ctxBtn, n.gatewayIp) }) {
-                            Text("Buka Admin Router")
-                        }
-                    }
-                }
-            }
-
             if (tab == 2) {
                 SpeedTestTab(ctx)
-            } else if (false) {
-                SettingsTab(
-                    ctx = ctx,
-                    pillWidth = pillWidth,
-                    pillHeight = pillHeight,
-                    pillFont = pillFont,
-                    onPillWidthChange = { v -> pillWidth = v },
-                    onPillHeightChange = { v -> pillHeight = v },
-                    onPillFontChange = { v -> pillFont = v }
-                )
             } else if (tab == 0) {
                 if (state.scanning) {
                     LinearProgressIndicator(
