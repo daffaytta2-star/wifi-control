@@ -250,31 +250,46 @@ fun Screen(vm: WifiViewModel) {
 
 @Composable
 fun DeviceRow(dev: Device, vm: WifiViewModel) {
-    Box(Modifier.fillMaxWidth().padding(vertical = 4.dp).glass()) {
-        Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+    AppCard(
+        modifier = Modifier.padding(vertical = AppSpacing.xs),
+        padding = AppSpacing.md
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            VendorAvatar(dev.vendor, size = 42.dp)
+            Spacer(Modifier.width(AppSpacing.md))
             Column(Modifier.weight(1f)) {
-                Text(dev.ip, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                Text(dev.mac, fontSize = 12.sp, color = Color.Gray)
-                Text(dev.vendor + "  |  " + dev.hostname,
-                    fontSize = 12.sp, color = Color.Gray)
-                if (dev.blocked) {
-                    Text("BLOCKED", fontSize = 11.sp, color = Color(0xFFF44336))
-                } else if (dev.trusted) {
-                    Text("TRUSTED", fontSize = 11.sp, color = Color(0xFF4CAF50))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        dev.ip,
+                        style = AppText.bodyBold,
+                        color = AppColor.TextPrimary
+                    )
+                    Spacer(Modifier.width(AppSpacing.sm))
+                    if (dev.blocked) {
+                        StatusBadge("BLOCKED", AppColor.Danger, AppColor.DangerBg)
+                    } else if (dev.trusted) {
+                        StatusBadge("TRUSTED", AppColor.Success, AppColor.SuccessBg)
+                    }
                 }
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    dev.vendor + "  •  " + dev.mac,
+                    style = AppText.caption,
+                    color = AppColor.TextSecondary
+                )
             }
             IconButton(onClick = { vm.toggleTrusted(dev) }) {
                 Icon(
                     Icons.Filled.CheckCircle,
                     contentDescription = "Trust",
-                    tint = if (dev.trusted) Color(0xFF4CAF50) else Color.Gray
+                    tint = if (dev.trusted) AppColor.Success else AppColor.TextMuted
                 )
             }
             IconButton(onClick = { vm.toggleBlock(dev) }) {
                 Icon(
                     Icons.Filled.Block,
                     contentDescription = "Block",
-                    tint = if (dev.blocked) Color(0xFFF44336) else Color.Gray
+                    tint = if (dev.blocked) AppColor.Danger else AppColor.TextMuted
                 )
             }
         }
