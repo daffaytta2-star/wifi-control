@@ -28,6 +28,21 @@ class NetworkScanner(private val ctx: Context) {
         (v shr 16 and 0xff) + "." +
         (v shr 24 and 0xff)
 
+    /** Lookup vendor via API online — fallback kalo OUI offline gak ketemu. */
+    private fun lookupVendorOnline(mac: String): String {
+        return try {
+            val url = java.net.URL("https://api.macvendors.com/" + mac)
+            val conn = url.openConnection() as java.net.HttpURLConnection
+            conn.connectTimeout = 3000
+            conn.readTimeout = 3000
+            if (conn.responseCode == 200) {
+                conn.inputStream.bufferedReader().readText().trim()
+            } else "Unknown"
+        } catch (_: Exception) {
+            "Unknown"
+        }
+    }
+
     private fun readArpViaRoot(): Map<String, String> {
         val map = mutableMapOf<String, String>()
         try {
@@ -92,12 +107,16 @@ class NetworkScanner(private val ctx: Context) {
                         InetAddress.getByName(ip).canonicalHostName
                             .substringBefore(".").takeIf { it != ip } ?: "?"
                     } catch (_: Exception) { "?" }
+                    var vendor = if (mac != "??:??:??:??:??:??")
+                        VendorDb.lookup(mac) else "Unknown"
+                    if (vendor == "Unknown" && mac != "??:??:??:??:??:??") {
+                        vendor = lookupVendorOnline(mac)
+                    }
                     val dev = Device(
                         ip = ip,
                         mac = mac,
                         hostname = host,
-                        vendor = if (mac != "??:??:??:??:??:??")
-                            VendorDb.lookup(mac) else "Unknown"
+                        vendor = vendor
                     )
                     synchronized(lock) { found.add(dev) }
                     onDevice(dev)
