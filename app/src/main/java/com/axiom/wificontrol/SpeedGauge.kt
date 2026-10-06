@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -69,7 +70,7 @@ fun SpeedGauge(
             val centerX = size.width / 2
             val centerY = size.height / 2
             val needleLength = (size.width / 2) - padding - 4.dp.toPx()
-            val angleRad = Math.toRadians((180.0 + animatedSweep).toDouble())
+            val angleRad = Math.toRadians((180f + animatedSweep).toDouble())
 
             drawLine(
                 color = AppColor.TextPrimary,
