@@ -77,6 +77,7 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
                 scanning = true, progress = 0f,
                 devices = emptyList(), message = null
             )
+            val scanStart = System.currentTimeMillis()
             val result = scanner.scan(
                 onProgress = { d, t ->
                     _state.value = _state.value.copy(
@@ -123,6 +124,12 @@ class WifiViewModel(app: Application) : AndroidViewModel(app) {
                         ))
                     } catch (_: Exception) {}
                 }
+            }
+
+            // Delay minimal 800ms biar progress keliatan
+            val elapsed = System.currentTimeMillis() - scanStart
+            if (elapsed < 800) {
+                kotlinx.coroutines.delay(800 - elapsed)
             }
 
             _state.value = _state.value.copy(
