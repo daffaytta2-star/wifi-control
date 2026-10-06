@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val monitor = DeviceMonitor(this)
         monitor.start()
         setContent {
-            GlassTheme {
+            AppTheme {
                 Screen(vm)
             }
         }
