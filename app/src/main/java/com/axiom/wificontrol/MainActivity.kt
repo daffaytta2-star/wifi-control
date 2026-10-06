@@ -208,13 +208,24 @@ fun Screen(vm: WifiViewModel) {
             if (currentTab == 2) {
                 SpeedTestTab(ctx)
             } else if (currentTab == 0) {
-                if (state.scanning) {
+                Box(Modifier.fillMaxWidth().height(16.dp)) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = state.scanning,
+                    enter = fadeIn(tween(300)),
+                    exit = fadeOut(tween(200))
+                ) {
                     LinearProgressIndicator(
                         progress = { state.progress },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        color = AppColor.Accent,
+                        trackColor = AppColor.SurfaceBorder
                     )
                 }
-                Text("Device (" + state.devices.size + ")",
+            }
+
+            Spacer(Modifier.height(AppSpacing.xs))
+
+            Text("Device (" + state.devices.size + ")",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 6.dp))
                 LazyColumn(Modifier.weight(1f)) {
