@@ -21,6 +21,7 @@ fun SpeedTestTab(ctx: android.content.Context) {
     var running by remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf("") }
     var result by remember { mutableStateOf<SpeedTest.Result?>(null) }
+    var liveSpeed by remember { mutableStateOf(0.0) }
     val scope = rememberCoroutineScope()
 
     Column(
@@ -77,7 +78,7 @@ fun SpeedTestTab(ctx: android.content.Context) {
             contentAlignment = Alignment.Center
         ) {
             SpeedGauge(
-                speedMbps = result?.downloadMbps ?: 0.0,
+                speedMbps = if (running) liveSpeed else (result?.downloadMbps ?: 0.0),
                 maxSpeed = 100.0
             )
         }
@@ -111,8 +112,12 @@ fun SpeedTestTab(ctx: android.content.Context) {
                     scope.launch {
                         running = true
                         result = null
-                        result = SpeedTest.runAll { progress = it }
+                        result = SpeedTest.runAll(
+                            onProgress = { progress = it },
+                            onLiveSpeed = { liveSpeed = it }
+                        )
                         running = false
+                        liveSpeed = 0.0
                     }
                 }
             },
