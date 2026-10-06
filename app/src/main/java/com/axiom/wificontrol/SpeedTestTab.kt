@@ -68,20 +68,26 @@ fun SpeedTestTab(ctx: android.content.Context) {
 
         Spacer(Modifier.height(AppSpacing.xl))
 
-        // Status / Progress
+        // Gauge
         Box(
-            Modifier.fillMaxWidth().height(80.dp),
+            Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            SpeedGauge(
+                speedMbps = result?.downloadMbps ?: 0.0,
+                maxSpeed = 100.0
+            )
+        }
+
+        Spacer(Modifier.height(AppSpacing.md))
+
+        // Status text
+        Box(
+            Modifier.fillMaxWidth().height(40.dp),
             contentAlignment = Alignment.Center
         ) {
             if (running) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(progress, style = AppText.body, color = AppColor.TextSecondary)
-                    Spacer(Modifier.height(AppSpacing.sm))
-                    androidx.compose.material3.CircularProgressIndicator(
-                        color = AppColor.Accent,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+                Text(progress, style = AppText.body, color = AppColor.TextSecondary)
             } else {
                 Text(
                     if (result == null) "Tekan Mulai untuk tes kecepatan"
