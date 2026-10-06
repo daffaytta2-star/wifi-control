@@ -400,51 +400,6 @@ fun SettingsTab(
     }
 }
 
-@Composable
-fun SpeedTestTab(ctx: android.content.Context) {
-    var running by remember { mutableStateOf(false) }
-    var progress by remember { mutableStateOf("") }
-    var result by remember { mutableStateOf<SpeedTest.Result?>(null) }
-    val scope = rememberCoroutineScope()
-
-    Column(Modifier.fillMaxSize().padding(4.dp)) {
-
-        Text("Speed Test",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(bottom = 16.dp))
-
-        Button(
-            onClick = {
-                scope.launch {
-                    running = true
-                    result = null
-                    result = SpeedTest.runAll { progress = it }
-                    running = false
-                }
-            },
-            enabled = !running,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-        ) {
-            Text(if (running) "Mengukur..." else "Mulai Tes")
-        }
-
-        if (running) {
-            Text(progress, fontSize = 14.sp, color = DarkGlassColors.TextSecondary)
-            LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 8.dp))
-        }
-
-        result?.let { r ->
-            if (r.error != null) {
-                Text("Error: " + r.error, color = Color.Red, fontSize = 14.sp)
-            } else {
-                SpeedRow("Ping", r.pingMs.toString() + " ms")
-                SpeedRow("Download", String.format("%.2f Mbps", r.downloadMbps))
-                SpeedRow("Upload", String.format("%.2f Mbps", r.uploadMbps))
-            }
-        }
-    }
-}
 
 @Composable
 fun SpeedRow(label: String, value: String) {
