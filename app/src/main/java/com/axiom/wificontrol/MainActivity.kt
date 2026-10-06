@@ -173,6 +173,14 @@ fun Screen(vm: WifiViewModel) {
     ) { pad ->
         Column(Modifier.padding(pad).fillMaxSize().liquidBackground().padding(12.dp)) {
 
+            state.netInfo?.let { n ->
+                HeroCard(
+                    netInfo = n,
+                    rooted = state.rooted,
+                    onOpenRouter = { RouterHelper.openRouter(ctx, n.gatewayIp) }
+                )
+            }
+
             if (tab == 2) {
                 SpeedTestTab(ctx)
             } else if (tab == 0) {
