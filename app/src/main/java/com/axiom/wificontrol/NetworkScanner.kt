@@ -28,6 +28,21 @@ class NetworkScanner(private val ctx: Context) {
         (v shr 16 and 0xff) + "." +
         (v shr 24 and 0xff)
 
+    private fun readArpViaRoot(): Map<String, String> {
+        val map = mutableMapOf<String, String>()
+        try {
+            val p = Runtime.getRuntime().exec(arrayOf("su", "-c", "ip neigh"))
+            val reader = p.inputStream.bufferedReader()
+            val output = reader.readText()
+            p.waitFor()
+            val regex = Regex("(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+dev\\s+\\S+\\s+lladdr\\s+([0-9a-f:]{17})")
+            regex.findAll(output).forEach { m ->
+                map[m.groupValues[1]] = m.groupValues[2].lowercase()
+            }
+        } catch (_: Exception) {}
+        return map
+    }
+
     private fun readArpTable(): Map<String, String> {
         val map = mutableMapOf<String, String>()
         try {
@@ -59,7 +74,10 @@ class NetworkScanner(private val ctx: Context) {
         val info = getNetInfo() ?: return emptyList()
         val base = info.myIp.substringBeforeLast(".")
         val hosts = (1..254).map { base + "." + it }
-        val arp = readArpTable()
+        var arp = readArpTable()
+        if (arp.isEmpty()) {
+            arp = readArpViaRoot()
+        }
         val found = mutableListOf<Device>()
         val lock = Any()
         var done = 0
