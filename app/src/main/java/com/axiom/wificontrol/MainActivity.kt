@@ -191,9 +191,9 @@ fun Screen(vm: WifiViewModel) {
                 }
             }
 
-            if (tab == 3) {
+            if (tab == 2) {
                 SpeedTestTab(ctx)
-            } else if (tab == 2) {
+            } else if (false) {
                 SettingsTab(
                     ctx = ctx,
                     pillWidth = pillWidth,
