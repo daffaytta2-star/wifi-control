@@ -311,8 +311,8 @@ fun TabPill(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .width(90.dp)
-            .padding(horizontal = 4.dp)
+            .weight(weight)
+            .padding(horizontal = 2.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(
                 if (selected) DarkGlassColors.PillActive else Color.Transparent
