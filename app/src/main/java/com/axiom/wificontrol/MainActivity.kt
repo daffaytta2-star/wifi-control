@@ -186,9 +186,18 @@ fun Screen(vm: WifiViewModel) {
                 }
             }
 
-            if (tab == 2) {
+            AnimatedContent(
+                targetState = tab,
+                transitionSpec = {
+                    (fadeIn(tween(250)) + slideInHorizontally { it / 8 })
+                        .togetherWith(fadeOut(tween(200)) + slideOutHorizontally { -it / 8 })
+                },
+                label = "tabTransition"
+            ) { currentTab ->
+
+            if (currentTab == 2) {
                 SpeedTestTab(ctx)
-            } else if (tab == 0) {
+            } else if (currentTab == 0) {
                 if (state.scanning) {
                     LinearProgressIndicator(
                         progress = { state.progress },
@@ -229,6 +238,7 @@ fun Screen(vm: WifiViewModel) {
                     }
                 }
             }
+            }  // AnimatedContent
         }
     }
 }
