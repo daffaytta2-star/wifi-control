@@ -143,6 +143,7 @@ fun Screen(vm: WifiViewModel) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TabPill(
+                        modifier = Modifier.weight(1f),
                         selected = tab == 0,
                         icon = { Icon(Icons.Filled.CheckCircle, "Devices") },
                         label = "Devices",
@@ -151,6 +152,7 @@ fun Screen(vm: WifiViewModel) {
                         verticalPadding = pillHeight
                     )
                     TabPill(
+                        modifier = Modifier.weight(1f),
                         selected = tab == 1,
                         icon = { Icon(Icons.Filled.Refresh, "History") },
                         label = "History",
@@ -159,6 +161,7 @@ fun Screen(vm: WifiViewModel) {
                         verticalPadding = pillHeight
                     )
                     TabPill(
+                        modifier = Modifier.weight(1f),
                         selected = tab == 2,
                         icon = { Icon(Icons.Filled.Refresh, "Speed") },
                         label = "Speed",
@@ -305,13 +308,12 @@ fun TabPill(
     onClick: () -> Unit,
     fontSize: Int = 10,
     verticalPadding: Int = 6,
-    weight: Float = 1f
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .weight(weight)
+        modifier = modifier
             .padding(horizontal = 2.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(
