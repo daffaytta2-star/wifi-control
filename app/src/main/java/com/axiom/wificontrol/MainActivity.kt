@@ -235,19 +235,17 @@ fun Screen(vm: WifiViewModel) {
                     }
                 }
             } else {
-                Row(
-                    Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("History (" + history.size + ")",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f))
-                }
                 if (history.isEmpty()) {
                     Text("Belom ada history. Scan dulu.",
                         fontSize = 13.sp, color = Color.Gray)
                 } else {
                     LazyColumn(Modifier.weight(1f)) {
+                        item {
+                            Text("History (" + history.size + ")",
+                                style = AppText.section,
+                                color = AppColor.TextPrimary,
+                                modifier = Modifier.padding(vertical = AppSpacing.sm))
+                        }
                         items(history, key = { it.id }) { h ->
                             HistoryRow(h)
                         }
