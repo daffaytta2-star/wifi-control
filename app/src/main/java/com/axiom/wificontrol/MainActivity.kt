@@ -25,6 +25,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -315,18 +316,58 @@ fun DeviceRow(dev: Device, vm: WifiViewModel) {
 @Composable
 fun HistoryRow(h: DeviceHistory) {
     val isConnect = h.event == "CONNECT"
-    val color = if (isConnect) Color(0xFF4CAF50) else Color(0xFFF44336)
+    val accentColor = if (isConnect) AppColor.Success else AppColor.Danger
+    val accentBg = if (isConnect) AppColor.SuccessBg else AppColor.DangerBg
     val time = java.text.SimpleDateFormat("dd MMM HH:mm:ss", java.util.Locale.getDefault())
         .format(java.util.Date(h.timestamp))
 
-    Box(Modifier.fillMaxWidth().padding(vertical = 3.dp).glass()) {
-        Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(h.event, fontSize = 12.sp, color = color, fontWeight = FontWeight.Bold)
-                Text(h.ip + "  |  " + h.vendor, fontSize = 14.sp)
-                Text(h.mac, fontSize = 11.sp, color = Color.Gray)
+    AppCard(
+        modifier = Modifier.padding(vertical = AppSpacing.xs),
+        padding = AppSpacing.md
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Timeline dot + line
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(24.dp)
+            ) {
+                Box(
+                    Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(accentColor)
+                )
             }
-            Text(time, fontSize = 11.sp, color = Color.Gray)
+            Spacer(Modifier.width(AppSpacing.sm))
+
+            Column(Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    StatusBadge(h.event, accentColor, accentBg)
+                    Spacer(Modifier.width(AppSpacing.sm))
+                    Text(
+                        time,
+                        style = AppText.caption,
+                        color = AppColor.TextMuted
+                    )
+                }
+                Spacer(Modifier.height(AppSpacing.xs))
+                Text(
+                    h.ip,
+                    style = AppText.bodyBold,
+                    color = AppColor.TextPrimary
+                )
+                Text(
+                    h.vendor,
+                    style = AppText.caption,
+                    color = AppColor.TextSecondary
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    h.mac,
+                    style = AppText.label,
+                    color = AppColor.TextMuted
+                )
+            }
         }
     }
 }
