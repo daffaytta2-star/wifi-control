@@ -226,10 +226,13 @@ fun Screen(vm: WifiViewModel) {
 
             Spacer(Modifier.height(AppSpacing.xs))
 
-            Text("Device (" + state.devices.size + ")",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 6.dp))
                 LazyColumn(Modifier.weight(1f)) {
+                item {
+                    Text("Device (" + state.devices.size + ")",
+                        style = AppText.section,
+                        color = AppColor.TextPrimary,
+                        modifier = Modifier.padding(vertical = AppSpacing.sm))
+                }
                     items(state.devices, key = { it.mac + it.ip }) { dev ->
                         DeviceRow(dev, vm)
                     }
