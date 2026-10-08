@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -135,6 +136,16 @@ fun Screen(vm: WifiViewModel) {
                         enabled = !state.scanning
                     ) {
                         Icon(Icons.Filled.Refresh, "Refresh")
+                    }
+                }
+                if (tab == 1) {
+                    IconButton(onClick = {
+                        scope.launch {
+                            vm.clearHistory()
+                            history = vm.loadHistory()
+                        }
+                    }) {
+                        Icon(Icons.Filled.Delete, "Hapus")
                     }
                 }
             )
