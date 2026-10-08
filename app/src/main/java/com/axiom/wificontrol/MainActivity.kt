@@ -242,12 +242,6 @@ fun Screen(vm: WifiViewModel) {
                     Text("History (" + history.size + ")",
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f))
-                    Button(onClick = {
-                        scope.launch {
-                            vm.clearHistory()
-                            history = vm.loadHistory()
-                        }
-                    }) { Text("Hapus") }
                 }
                 if (history.isEmpty()) {
                     Text("Belom ada history. Scan dulu.",
